@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.5.3</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.formacionbdi.springboot.app.oauth2</groupId>
+	<artifactId>springboot-servicio-usuarios-oauth2</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>springboot-servicio-usuarios-oauth2</name>
+	<description>Demo project for Spring Boot</description>
+	<properties>
+		<java.version>11</java.version>
+		<spring-cloud.version>2020.0.3</spring-cloud.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		
+		<!-- netflix-eureka-client: cuando agregamos esta dependencia queda registrado automaticamente 
+		como un cliente de eureka --> 
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+	
+	
+	
+	<!-- esta dependencia se requiere para que funcione correctamente el cliente del servidor de configuraciones., 
+	En caso de que se utilice una versión de Spring Boot igual o superior a la 2.4.0 (Spring Cloud 2020.0.0) 
+	
+	Esto se aplica a cualquier servicio que sea cliente del servidor de configuraciones y que use versiones de 
+	Spring Boot 2.4.0 o superior.
+	
+	Otra solución es agregar en el applicacion.properties
+
+    spring.profiles.active=dev
+    spring.config.import=optional:configserver:
+    Pero la mejor solución por ahora es agregar la dependencia spring-cloud-starter-bootstrap en el pom
+	-->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-bootstrap</artifactId>
+		</dependency>
+
+
+		<!-- todo lo relacionado con spring security oauth, tambien tenemos que 
+			agregar la dependencia jwt -->
+
+		<dependency>
+			<groupId>org.springframework.security.oauth</groupId>
+			<artifactId>spring-security-oauth2</artifactId>
+			<version>2.3.8.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-jwt</artifactId>
+			<version>1.1.1.RELEASE</version>
+		</dependency>
+
+
+		<!--org.glassfish.jaxb si utilizamos java 11 hacia riva tenemos que agregar 
+			la dependencia de jaxb --><!-- -->
+		<dependency>
+			<groupId>org.glassfish.jaxb</groupId>
+			<artifactId>jaxb-runtime</artifactId>
+		</dependency>
+
+
+		<!--esta dependencia es la dependencia para reutlizar la clase usuario y 
+			roles de nuestor proyecto servicio-usuarios-commons 
+			
+			NOTA: usuarios.commons incluye jpa y como se incluye tambien lo incluira en este proyecto 
+			y nos pedira que configuremos una conexion a una base de datos para evitar eso podemos anota la 
+			clase principal con la siguiente anotacion 
+			@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
+			o tambien podemos excluirla desde la dependencia 
+			
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-data-jpa</artifactId>
+				</exclusion>
+			</exclusions>
+			
+			-->
+
+		<dependency>
+			<groupId>com.formacionbdi.springboot.app.usuarios.commons</groupId>
+			<artifactId>springboot-servicio-usuarios-commons</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-data-jpa</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+	
+	<!-- trazabilidad con sleuth  -->		
+	<dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-sleuth</artifactId>
+    </dependency>
+    
+    
+    <!-- esta dependencia sirve para relaizar la trace en el servidor de zipkin , esta dependencia se encuentra 
+	en Observability/Zipkin , con esto marcamos a un microservicio como un cliente de zipkin-->	
+    	<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-sleuth-zipkin</artifactId>
+		</dependency>
+
+
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+	
+	
+	
+	    <!-- esta dependencia se encuentra en Messaging/ Spring for RabbitMQ
+	    al tener la dependencia de rabbitMQ automaticamente el microservicio enves de  enviar la traza con hhtp
+	    lo va a enviar mediante el broker usando rabbitmq -->	
+	
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.amqp</groupId>
+			<artifactId>spring-rabbit-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+
+		
+	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+	<repositories>
+		<repository>
+			<id>netflix-candidates</id>
+			<name>Netflix Candidates</name>
+			<url>https://artifactory-oss.prod.netflix.net/artifactory/maven-oss-candidates</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+</project>
